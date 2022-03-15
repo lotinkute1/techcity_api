@@ -14,7 +14,10 @@ class CreateShipsTable extends Migration
     public function up()
     {
         Schema::create('ships', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->string('ship_company');
+            $table->double('ship_price');
+            $table->string('unit');
             $table->timestamps();
         });
     }
