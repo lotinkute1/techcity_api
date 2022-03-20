@@ -8,6 +8,28 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string',
+        ]);
+        $user = User::where('email', $request->email)->first();
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'messages' => 'invalid password'
+            ], 401);
+        }
+        $token = $user->createToken('myapptoken')->plainTextToken;
+        $response = [
+            'code' => 201,
+            'messages' => 'login successful',
+            'data' => [
+                'token' => $token
+            ]
+        ];
+        return response()->json($response, 201)->cookie('loginTime', $token, 60 * 24);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -66,7 +88,18 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::find($id);
+        if($user){
+            return response()->json([
+                'code'=>200,
+                'message'=> 'get user',
+                'data'=>$user
+            ],200);
+        }
+        return response()->json([
+            'code'=>404,
+            'message'=> 'user not found',
+        ],404);
     }
 
     /**
@@ -89,7 +122,21 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+        if ($user) {
+            $user->update($request->all());
+            return response()->json([
+                'code' => 200,
+                'message' => 'updated successfully',
+                'data' => $user
+            ]);
+        }
+
+        return response()->json([
+            'code' => 404,
+            'message' => 'user not found',
+        ]);
+
     }
 
     /**
@@ -100,6 +147,17 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $result = User::find($id);
+        if ($result) {
+            $result->delete();
+            return response()->json([
+                'code' => 204,
+                'message' => 'delete user successfully',
+            ]);
+        }
+        return response()->json([
+            'code' => 404,
+            'message' => 'user not found',
+        ]);
     }
 }

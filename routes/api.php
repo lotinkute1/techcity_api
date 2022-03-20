@@ -21,13 +21,24 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/register',[UserController::class,'create']);
+Route::post('/login',[UserController::class,'login']);
 
-Route::prefix('user')->group(function () {
-    Route::get('/getUsers',[UserController::class,'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('user')->group(function () {
+        Route::get('/getUsers',[UserController::class,'index']);
+        Route::get('/getUserById/{id}',[UserController::class,'show']);
+        Route::put('/updateUser/{id}',[UserController::class,'update']);
+
+        Route::middleware(['checkrole'])->group(function(){
+            Route::delete('/deleteUser/{id}',[UserController::class,'destroy']);
+        });
+    });
 });
 
 Route::prefix('product')->group(function () {
     Route::get('/getProducts',[ProductController::class,'index']);
 });
+
+
 
 
