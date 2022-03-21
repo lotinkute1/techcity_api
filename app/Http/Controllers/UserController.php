@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
+
+use function PHPUnit\Framework\isEmpty;
 
 class UserController extends Controller
 {
@@ -108,9 +112,20 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function logout(Request $request)
     {
-        //
+        //delete token in database
+        Auth::user()->tokens->each(function ($token, $key) {
+            $token->delete();
+        });
+        // delete token in cookie
+        $deleteCookie = Cookie::forget('loginTime');
+
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'logout successfully'
+        ], 201)->withCookie($deleteCookie);
     }
 
     /**
@@ -159,5 +174,21 @@ class UserController extends Controller
             'code' => 404,
             'message' => 'user not found',
         ]);
+    }
+    public function userFilter(Request $request){
+        $result = User::where($request['filterType'],'like','%'.$request['filterVal'].'%')->get();
+        if(count($result) > 0){
+            return response()->json([
+                'code'=>201,
+                'message'=>'filter user by ' . $request['filterType'],
+                'data'=>$result
+            ]);
+        }else{
+            return response()->json([
+                'code'=>404,
+                'message'=>'not found',
+            ]);
+
+        }
     }
 }

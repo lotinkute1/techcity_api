@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/getUsers',[UserController::class,'index']);
         Route::get('/getUserById/{id}',[UserController::class,'show']);
         Route::put('/updateUser/{id}',[UserController::class,'update']);
+        Route::get('/userFilter',[UserController::class,'userFilter']);
+        Route::post('/logout',[UserController::class,'logout']);
 
         Route::middleware(['checkrole'])->group(function(){
             Route::delete('/deleteUser/{id}',[UserController::class,'destroy']);
