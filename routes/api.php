@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Category;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -24,12 +25,12 @@ Route::post('/register',[UserController::class,'create']);
 Route::post('/login',[UserController::class,'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout',[UserController::class,'logout']);
     Route::prefix('user')->group(function () {
         Route::get('/getUsers',[UserController::class,'index']);
         Route::get('/getUserById/{id}',[UserController::class,'show']);
         Route::put('/updateUser/{id}',[UserController::class,'update']);
         Route::get('/userFilter',[UserController::class,'userFilter']);
-        Route::post('/logout',[UserController::class,'logout']);
 
         Route::middleware(['checkrole'])->group(function(){
             Route::delete('/deleteUser/{id}',[UserController::class,'destroy']);
@@ -39,6 +40,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::prefix('product')->group(function () {
     Route::get('/getProducts',[ProductController::class,'index']);
+});
+Route::prefix('category')->group(function () {
+
+    Route::get('/getCategories',[Category::class,'index']);
+    Route::post('/addCategory',[Category::class,'addCategory']);
 });
 
 
