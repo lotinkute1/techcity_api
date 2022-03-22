@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Category;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\UserController;
@@ -22,9 +23,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/register',[UserController::class,'create']);
+Route::post('/login',[UserController::class,'login']);
 
-Route::prefix('user')->group(function () {
-    Route::get('/getUsers',[UserController::class,'index']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout',[UserController::class,'logout']);
+    Route::prefix('user')->group(function () {
+        Route::get('/getUsers',[UserController::class,'index']);
+        Route::get('/getUserById/{id}',[UserController::class,'show']);
+        Route::put('/updateUser/{id}',[UserController::class,'update']);
+        Route::get('/userFilter',[UserController::class,'userFilter']);
+
+        Route::middleware(['checkrole'])->group(function(){
+            Route::delete('/deleteUser/{id}',[UserController::class,'destroy']);
+        });
+    });
 });
 
 
@@ -36,6 +48,11 @@ Route::prefix('product')->group(function () {
     Route::post('/addProduct',[ProductController::class,'create']);
     Route::get('/getProductByName/{name}',[ProductController::class,'getProductByName']);
 });
+Route::prefix('category')->group(function () {
+    Route::post('/addCategory',[Category::class,'addCategory']);
+});
+
+
 
 
 Route::prefix('ship')->group(function () {
