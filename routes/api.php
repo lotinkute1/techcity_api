@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Category;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShipController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -38,8 +39,14 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
+
 Route::prefix('product')->group(function () {
     Route::get('/getProducts',[ProductController::class,'index']);
+    Route::get('/getProduct/{id}',[ProductController::class,'show']);
+    Route::put('/updateProduct/{id}',[ProductController::class,'update']);
+    Route::delete('/deleteProduct/{id}',[ProductController::class,'destroy']);
+    Route::post('/addProduct',[ProductController::class,'create']);
+    Route::get('/getProductByName/{name}',[ProductController::class,'getProductByName']);
 });
 Route::prefix('category')->group(function () {
     Route::post('/addCategory',[Category::class,'addCategory']);
@@ -47,4 +54,12 @@ Route::prefix('category')->group(function () {
 
 
 
+
+Route::prefix('ship')->group(function () {
+    Route::get('/getShips',[ShipController::class,'index']);
+    Route::get('/getShip/{id}',[ShipController::class,'show']);
+    Route::post('/addShip',[ShipController::class,'create']);
+    Route::put('/updateShip/{id}',[ShipController::class,'update']);
+    Route::delete('/deleteShip/{id}',[ShipController::class,'destroy']);
+});
 
