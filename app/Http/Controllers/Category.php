@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category as ModelsCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class Category extends Controller
 {
@@ -29,10 +30,16 @@ class Category extends Controller
      */
     public function addCategory(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(),[
             'category_name' => 'required|string',
             'status' => 'required|min:0|max:1',
         ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => 403,
+                'message' => $validator->errors()
+            ]);
+        };
         $response = ModelsCategory::create([
             'category_name' => $request['category_name'],
             'status' => $request['status']
@@ -59,7 +66,19 @@ class Category extends Controller
      */
     public function show($id)
     {
-        //
+        $category= ModelsCategory::find($id);
+        if($category){
+            return response()->json([
+                'status' => '200',
+                'message' => 'get category by id',
+                'data' => $category
+            ]);
+        }else{
+            return response()->json([
+                'status' => '404',
+                'message' => 'category not found',
+            ]);
+        }
     }
 
     /**

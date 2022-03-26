@@ -27,6 +27,7 @@ Route::post('/login',[UserController::class,'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout',[UserController::class,'logout']);
+    // user api
     Route::prefix('user')->group(function () {
         Route::get('/getUsers',[UserController::class,'index']);
         Route::get('/getUserById/{id}',[UserController::class,'show']);
@@ -37,6 +38,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/deleteUser/{id}',[UserController::class,'destroy']);
         });
     });
+    // category api
+    Route::prefix('category')->group(function () {
+        Route::get('/getCategories',[Category::class,'index']);
+        Route::get('/getCategoryById/{id}',[Category::class,'show']);
+        Route::post('/addCategory',[Category::class,'addCategory']);
+    });
 });
 
 
@@ -45,19 +52,15 @@ Route::prefix('product')->group(function () {
     Route::get('/getProduct/{id}',[ProductController::class,'show']);
     Route::put('/updateProduct/{id}',[ProductController::class,'update']);
     Route::get('/productFilter',[ProductController::class,'productFilter']);
-    Route::middleware(['checkrole'])->group(function(){
-        Route::post('/addProduct',[ProductController::class,'create']);
-        Route::delete('/deleteProduct/{id}',[ProductController::class,'destroy']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware(['checkrole'])->group(function(){
+            Route::post('/addProduct',[ProductController::class,'create']);
+            Route::delete('/deleteProduct/{id}',[ProductController::class,'destroy']);
+        });
     });
 });
-Route::prefix('category')->group(function () {
-    Route::post('/addCategory',[Category::class,'addCategory']);
-});
-Route::prefix('category')->group(function () {
 
-    Route::get('/getCategories',[Category::class,'index']);
-    Route::post('/addCategory',[Category::class,'addCategory']);
-});
+
 
 
 
