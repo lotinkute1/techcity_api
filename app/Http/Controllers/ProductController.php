@@ -50,7 +50,7 @@ class ProductController extends Controller
 
         ]);
         $response = Product::create([
-            
+
             'category_id' => $request['category_id'],
             'name' => $request['name'],
             'brand' => $request['brand'],
@@ -66,7 +66,11 @@ class ProductController extends Controller
             'user_id' => $request['user_id']
 
         ]);
-        return response($response, 201);
+        return response($response, 201)->json([
+            'status'=>201,
+            'message' =>'successfully created product',
+            'data'=>$response
+        ]);
     }
 
     /**
@@ -102,7 +106,7 @@ class ProductController extends Controller
             'message'=> 'product not found',
         ],404);
     }
-    
+
 
     /**
      * Show the form for editing the specified resource.
@@ -110,20 +114,32 @@ class ProductController extends Controller
      * @param  int  $name
      * @return \Illuminate\Http\Response
      */
-    public function getProductByName($name)
+    public function productFilter(Request $request)
     {
-        //Tìm theo tên
-        $product = Product::where('name', 'like', '%' . $name . '%')->get();
+        //filter products
+        if(
+            $request['filterType']=='stock_amount'||
+            $request['filterType']=='price'||
+            $request['filterType']=='category_id'||
+            $request['filterType']=='ship_id'||
+            $request['filterType']=='user_id'
+        ){
+            $product = Product::where($request['filterType'], '=', $request['filterVal'])->get();
+
+        }else{
+
+            $product = Product::where($request['filterType'], 'like', '%' . $request['filterVal'] . '%')->get();
+        }
         if(count($product)){
             return response()->json([
                 'code'=>200,
-                'message'=> 'get product by name',
+                'message'=> 'get product by '.$request['filterType'],
                 'data'=>$product
             ],200);
         }
         return response()->json([
             'code'=>404,
-            'message'=> 'product not found',
+            'message'=> 'product filter by ' . $request['filterType'] . ' not found',
         ],404);
 
     }

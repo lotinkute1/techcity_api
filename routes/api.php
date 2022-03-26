@@ -44,9 +44,11 @@ Route::prefix('product')->group(function () {
     Route::get('/getProducts',[ProductController::class,'index']);
     Route::get('/getProduct/{id}',[ProductController::class,'show']);
     Route::put('/updateProduct/{id}',[ProductController::class,'update']);
-    Route::delete('/deleteProduct/{id}',[ProductController::class,'destroy']);
-    Route::post('/addProduct',[ProductController::class,'create']);
-    Route::get('/getProductByName/{name}',[ProductController::class,'getProductByName']);
+    Route::get('/productFilter',[ProductController::class,'productFilter']);
+    Route::middleware(['checkrole'])->group(function(){
+        Route::post('/addProduct',[ProductController::class,'create']);
+        Route::delete('/deleteProduct/{id}',[ProductController::class,'destroy']);
+    });
 });
 Route::prefix('category')->group(function () {
     Route::post('/addCategory',[Category::class,'addCategory']);

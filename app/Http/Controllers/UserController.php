@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -57,20 +58,39 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        $request->validate([
+        //  $request->validate([
+        //     'name' => 'required|string',
+        //     'email' => 'required|string|unique:users,email',
+        //     'password' => 'required|string',
+        //     'phone_number' => 'required',
+        // ]);
+
+        $validator = Validator::make($request->all(),[
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
             'password' => 'required|string',
-            'phone_number' => 'required',
+            'phone_number' => 'required|unique:users,phone_number'
         ]);
-        $response = User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'password' => bcrypt($request['password']),
-            'phone_number' => $request['phone_number'],
+        if($validator->fails()){
+            return response()->json([
+                'status'=>403,
+                'message' =>$validator->errors()
+            ],403);
+        }else{
 
-        ]);
-        return response($response, 201);
+            $response = User::create([
+                'name' => $request['name'],
+                'email' => $request['email'],
+                'password' => bcrypt($request['password']),
+                'phone_number' => $request['phone_number'],
+
+            ]);
+            return response()->json([
+                'status'=>201,
+                'message'=>'register successfully',
+                'data' => $response
+            ],201);
+        }
     }
 
     /**
