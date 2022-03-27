@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\discountController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\UserController;
@@ -51,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-
+// product api
 Route::prefix('product')->group(function () {
     Route::get('/getProducts', [ProductController::class, 'index']);
     Route::get('/getProduct/{id}', [ProductController::class, 'show']);
@@ -64,12 +65,7 @@ Route::prefix('product')->group(function () {
         });
     });
 });
-
-
-
-
-
-
+// ship api
 Route::prefix('ship')->group(function () {
     Route::get('/getShips', [ShipController::class, 'index']);
     Route::get('/getShip/{id}', [ShipController::class, 'show']);
@@ -80,4 +76,14 @@ Route::prefix('ship')->group(function () {
             Route::delete('/deleteShip/{id}', [ShipController::class, 'destroy']);
         });
     });
+});
+
+// discount api
+Route::middleware('auth:sanctum','checkrole')->prefix('discount')->group(function () {
+        Route::get('/getDiscounts', [discountController::class, 'index']);
+        Route::get('/getDiscount/{id}', [discountController::class, 'show']);
+        Route::post('/addDiscount', [discountController::class, 'create']);
+        Route::put('/updateDiscount/{id}', [discountController::class, 'updateDiscount']);
+        Route::delete('/deleteDiscount/{id}', [discountController::class, 'destroy']);
+        Route::get('/findDiscountByName/{name}', [discountController::class, 'findByName']);
 });
