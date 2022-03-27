@@ -6,7 +6,7 @@ use App\Models\Category as ModelsCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class Category extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -101,7 +101,20 @@ class Category extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $category = ModelsCategory::find($id);
+        if($category){
+            $category->update($request->all());
+            return response()->json([
+                'status' => '201',
+                'message'=> 'category update succesfully',
+                'data'=>$category
+            ]);
+        }
+        return response()->json([
+            'status' => '201',
+            'message' => 'category not found'
+        ]);
+
     }
 
     /**
@@ -125,5 +138,19 @@ class Category extends Controller
             'message'=>'category not found'
         ]);
 
+    }
+    public function getCategoriesByName($name){
+        $result= ModelsCategory::where('category_name','like','%'.$name.'%')->get();
+        if(count($result)>0){
+            return response()->json([
+                'code'=> 200,
+                'message' => 'get category by name',
+                'data' =>$result
+            ],200);
+        }
+        return response()->json([
+            'code' => 404,
+            'message' => 'category not found'
+        ],404);
     }
 }
