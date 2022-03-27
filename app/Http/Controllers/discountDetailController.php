@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DiscountDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class discountDetailController extends Controller
 {
@@ -13,7 +15,12 @@ class discountDetailController extends Controller
      */
     public function index()
     {
-        //
+        $discounts = DiscountDetail::all();
+        return Response()->json([
+            'status' => '200',
+            'message' => 'get DiscountDetail list',
+            'data' => $discounts
+        ]);
     }
 
     /**
@@ -21,9 +28,30 @@ class discountDetailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'discount_percent' => 'required|int',
+            'product_id' => 'required|int',
+            'discount_id' => 'required|int',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 403,
+                'message' => $validator->errors()
+            ], 403);
+        }
+
+        $response = DiscountDetail::create([
+            'discount_percent' => $request['discount_percent'],
+            'product_id' => $request['product_id'],
+            'discount_id' => $request['discount_id'],
+        ]);
+        return response()->json([
+            'status' => 201,
+            'message' => 'create discount successfully',
+            'data' => $response
+        ], 201);
     }
 
     /**
@@ -45,7 +73,18 @@ class discountDetailController extends Controller
      */
     public function show($id)
     {
-        //
+        $discount = DiscountDetail::find($id);
+        if ($discount) {
+            return response()->json([
+                'code' => 200,
+                'message' => 'get Discount Detail by id',
+                'data' => $discount
+            ], 200);
+        }
+        return response()->json([
+            'code' => 404,
+            'message' => 'Discount Detail not found',
+        ], 404);
     }
 
     /**
@@ -68,7 +107,19 @@ class discountDetailController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $discount = DiscountDetail::find($id);
+        if($discount){
+            $discount->update($request->all());
+            return response()->json([
+                'status' => 200,
+                'message' => 'update Discount Detail successfully',
+                'data'=>$discount
+            ]);
+        }
+        return response()->json([
+            'status' => 404,
+            'message' => 'Discount Detail not found'
+        ]);
     }
 
     /**
@@ -79,6 +130,20 @@ class discountDetailController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $discount = DiscountDetail::find($id);
+        if($discount){
+            $discount->delete();
+
+            return response()->json([
+                'status' => 203,
+                'message' => 'delete Discount Detail successfully',
+            ]);
+        }else{
+
+            return response()->json([
+                'status' => 404,
+                'message' => 'Discount Detail not found',
+            ]);
+        }
     }
 }

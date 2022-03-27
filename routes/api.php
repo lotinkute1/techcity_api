@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\discountController;
+use App\Http\Controllers\discountDetailController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\UserController;
@@ -79,11 +80,18 @@ Route::prefix('ship')->group(function () {
 });
 
 // discount api
-Route::middleware('auth:sanctum','checkrole')->prefix('discount')->group(function () {
-        Route::get('/getDiscounts', [discountController::class, 'index']);
-        Route::get('/getDiscount/{id}', [discountController::class, 'show']);
-        Route::post('/addDiscount', [discountController::class, 'create']);
-        Route::put('/updateDiscount/{id}', [discountController::class, 'updateDiscount']);
-        Route::delete('/deleteDiscount/{id}', [discountController::class, 'destroy']);
-        Route::get('/findDiscountByName/{name}', [discountController::class, 'findByName']);
+Route::middleware('auth:sanctum', 'checkrole')->prefix('discount')->group(function () {
+    Route::get('/getDiscounts', [discountController::class, 'index']);
+    Route::get('/getDiscount/{id}', [discountController::class, 'show']);
+    Route::post('/addDiscount', [discountController::class, 'create']);
+    Route::put('/updateDiscount/{id}', [discountController::class, 'updateDiscount']);
+    Route::delete('/deleteDiscount/{id}', [discountController::class, 'destroy']);
+    Route::get('/findDiscountByName/{name}', [discountController::class, 'findByName']);
+    // discount Detail api
+    Route::get('/getDiscountsDetail', [discountDetailController::class, 'index']);
+    Route::get('/getDiscountDetail/{id}', [discountDetailController::class, 'show']);
+    Route::post('/addDiscountDetail', [discountDetailController::class, 'create']);
+    Route::put('/updateDiscountDetail/{id}', [discountDetailController::class, 'update']);
+    Route::delete('/deleteDiscountDetail/{id}', [discountDetailController::class, 'destroy']);
 });
+
