@@ -45,8 +45,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/addCategory',[Category::class,'addCategory']);
     });
 });
-
-
+Route::post('loginJWT', [UserController::class, 'loginJWT']);
+Route::group(['middleware' => ['jwt.verify']], function() {
+    Route::post('/logoutJWT', [UserController::class, 'logoutJWT']);
+    Route::get('/getProductsJWT',[ProductController::class,'indexJWT']);
+});
 Route::prefix('product')->group(function () {
     Route::get('/getProducts',[ProductController::class,'index']);
     Route::get('/getProduct/{id}',[ProductController::class,'show']);

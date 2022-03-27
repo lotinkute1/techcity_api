@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -35,6 +37,45 @@ class UserController extends Controller
         ];
         return response()->json($response, 201)->cookie('loginTime', $token, 60 * 24);
     }
+    public function loginJWT(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        //valid credential
+        $validator = Validator::make($credentials, [
+            'email' => 'required|email',
+            'password' => 'required|string'
+        ]);
+
+        //Send failed response if request is not valid
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 200);
+        }
+
+        //Request is validated
+        //Crean token
+        try {
+            if (! $token = JWTAuth::attempt($credentials)) {
+                return response()->json([
+                	'success' => false,
+                	'message' => 'Login credentials are invalid.',
+                ], 400);
+            }
+        } catch (JWTException $e) {
+    	return $credentials;
+            return response()->json([
+                	'success' => false,
+                	'message' => 'Could not create token.',
+                ], 500);
+        }
+
+ 		//Token created, return with success response and jwt token
+        return response()->json([
+            'status' => 200,
+            'message' => 'login successful',
+            'token' => $token
+        ])->cookie('loginTime', $token, 60 * 24);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -56,6 +97,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function create(Request $request)
     {
         //  $request->validate([
@@ -64,8 +106,10 @@ class UserController extends Controller
         //     'password' => 'required|string',
         //     'phone_number' => 'required',
         // ]);
-
-        $validator = Validator::make($request->all(),[
+        $data = $request->only([
+            'name','email','password','phone_number'
+        ]);
+        $validator = Validator::make($data,[
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
             'password' => 'required|string',
@@ -92,6 +136,7 @@ class UserController extends Controller
             ],201);
         }
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -132,6 +177,44 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function logoutJWT(Request $request)
+    {
+        //valid credential
+        $validator = Validator::make($request->only('token'), [
+            'token' => 'required'
+        ]);
+
+        //Send failed response if request is not valid
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 200);
+        }
+
+		//Request is validated, do logout
+        try {
+            JWTAuth::invalidate($request->token);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User has been logged out'
+            ]);
+        } catch (JWTException $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, user cannot be logged out'
+            ], 200);
+        }
+    }
+    public function indexJWT(Request $request)
+    {
+
+        $this->validate($request, [
+            'token' => 'required'
+        ]);
+
+        $user = JWTAuth::authenticate($request->token);
+
+        return response()->json(['user' => $user]);
+    }
     public function logout(Request $request)
     {
         //delete token in database

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProductController extends Controller
 {
@@ -13,8 +14,18 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct(){
+        $this->user = JWTAuth::parseToken()->authenticate();
+    }
+    public function indexJWT()
+    {
+        return $this->user
+            ->products()
+            ->get();
+    }
     public function index()
     {
+
         //get all products
         $products = Product::all();
         return response()->json([
@@ -23,6 +34,7 @@ class ProductController extends Controller
             'data'=> $products
         ],200);
     }
+
 
     /**
      * Show the form for creating a new resource.
