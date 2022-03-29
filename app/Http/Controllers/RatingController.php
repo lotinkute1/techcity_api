@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ship;
+use App\Models\Rating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ShipController extends Controller
+class RatingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,12 +15,12 @@ class ShipController extends Controller
      */
     public function index()
     {
-        //get all ships
-        $ship = Ship::all();
+        //get rating
+        $rating = Rating::all();
         return response()->json([
             'code'=>200,
-            'message'=>'ships list',
-            'data'=> $ship
+            'message'=>'rating list',
+            'data'=> $rating
         ],200);
     }
 
@@ -31,24 +31,30 @@ class ShipController extends Controller
      */
     public function create(Request $request)
     {
-        //Tạo ship 
-        $validator = Validator::make($request->all(),[
-            'ship_company' => 'required|unique',
-            'ship_price' => 'required|numeric',
-            'unit' => 'required'
+        //Create rating
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|int',
+            'product_id' => 'required|int',
+            'raiting_stars' => 'required|min:0|max:5',
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 403,
                 'message' => $validator->errors()
-            ]);
-        };
-        $response = Ship::create([
-            'ship_company' => $request['ship_company'],
-            'ship_price' => $request['ship_price'],
-            'unit' => $request['unit']
+            ], 403);
+        }
+
+        $response = Rating::create([
+            'user_id' => $request['user_id'],
+            'product_id' => $request['product_id'],
+            'raiting_stars' => $request['raiting_stars'],
+            'comment_content' => $request['comment_content'],
         ]);
-        return response($response, 201);
+        return response()->json([
+            'status' => 201,
+            'message' => 'create rating successfully',
+            'data' => $response
+        ], 201);
     }
 
     /**
@@ -70,18 +76,18 @@ class ShipController extends Controller
      */
     public function show($id)
     {
-        //Lấy Ship theo Id
-        $ship = Ship::find($id);
-        if($ship){
+        //Lấy rating theo id
+        $rating = Rating::find($id);
+        if($rating){
             return response()->json([
                 'code'=>200,
-                'message'=> 'get ship',
-                'data'=>$ship
+                'message'=> 'get rating by Id',
+                'data'=>$rating
             ],200);
         }
         return response()->json([
             'code'=>404,
-            'message'=> 'ship not found',
+            'message'=> 'rating not found',
         ],404);
     }
 
@@ -105,20 +111,20 @@ class ShipController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //Update theo id
-        $ship = Ship::find($id);
-        if ($ship) {
-            $ship->update($request->all());
+        //Update Rating
+        $rating = Rating::find($id);
+        if ($rating) {
+            $rating->update($request->all());
             return response()->json([
                 'code' => 200,
-                'message' => 'updated successfully',
-                'data' => $ship
+                'message' => 'updated rating successfully',
+                'data' => $rating
             ]);
         }
 
         return response()->json([
             'code' => 404,
-            'message' => 'product not found',
+            'message' => 'rating not found',
         ]);
     }
 
@@ -130,18 +136,18 @@ class ShipController extends Controller
      */
     public function destroy($id)
     {
-            //Xóa theo id
-        $ship = Ship::find($id);
-        if ($ship) {
-            $ship->delete();
+        //Xóa theo id
+        $rating = Rating::find($id);
+        if ($rating) {
+            $rating->delete();
             return response()->json([
                 'code' => 204,
-                'message' => 'deleted ship',
+                'message' => 'deleted rating',
             ]);
         }
         return response()->json([
             'code' => 404,
-            'message' => 'ship not found',
-        ]);         
+            'message' => 'rating not found',
+        ]);
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\discountController;
 use App\Http\Controllers\discountDetailController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -67,6 +68,7 @@ Route::prefix('product')->group(function () {
     });
 });
 // ship api
+Route::middleware('auth:sanctum')->group(function () {
 Route::prefix('ship')->group(function () {
     Route::get('/getShips', [ShipController::class, 'index']);
     Route::get('/getShip/{id}', [ShipController::class, 'show']);
@@ -77,6 +79,7 @@ Route::prefix('ship')->group(function () {
             Route::delete('/deleteShip/{id}', [ShipController::class, 'destroy']);
         });
     });
+});
 });
 
 // discount api
@@ -95,3 +98,12 @@ Route::middleware('auth:sanctum', 'checkrole')->prefix('discount')->group(functi
     Route::delete('/deleteDiscountDetail/{id}', [discountDetailController::class, 'destroy']);
 });
 
+
+//rating api
+Route::prefix('rating')->group(function () {
+    Route::get('/getRatings', [RatingController::class, 'index']);
+    Route::post('/addRating', [RatingController::class, 'create']);
+    Route::get('/getRatingById/{id}', [RatingController::class, 'show']);
+    Route::put('/updateRating/{id}', [RatingController::class, 'update']);
+    Route::delete('/deleteRating/{id}', [RatingController::class, 'destroy']);
+});
