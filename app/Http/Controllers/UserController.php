@@ -30,6 +30,7 @@ class UserController extends Controller
             'code' => 201,
             'messages' => 'login successful',
             'data' => [
+                'user'=> $user,
                 'token' => $token
             ]
         ];
