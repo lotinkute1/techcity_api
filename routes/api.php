@@ -3,6 +3,8 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\discountController;
 use App\Http\Controllers\discountDetailController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\UserController;
@@ -94,4 +96,18 @@ Route::middleware('auth:sanctum', 'checkrole')->prefix('discount')->group(functi
     Route::put('/updateDiscountDetail/{id}', [discountDetailController::class, 'update']);
     Route::delete('/deleteDiscountDetail/{id}', [discountDetailController::class, 'destroy']);
 });
+// order api
+Route::middleware('auth:sanctum')->prefix('order')->group(function () {
+    Route::get('/getOrders', [OrderController::class, 'index']);
+    Route::get('/getOrder/{id}', [OrderController::class, 'show']);
+    Route::post('/addOrder', [OrderController::class, 'create']);
+    Route::put('/updateOrder/{id}', [OrderController::class, 'update']);
+    Route::delete('/deleteOrder/{id}', [OrderController::class, 'destroy']);
 
+    // order api
+    Route::get('/getOrdersDetail', [OrderDetailController::class, 'index']);
+    Route::get('/getOrderDetail/{id}', [OrderDetailController::class, 'show']);
+    Route::post('/addOrderDetail', [OrderDetailController::class, 'create']);
+    Route::put('/updateOrderDetail/{id}', [OrderDetailController::class, 'update']);
+    Route::delete('/deleteOrderDetail/{id}', [OrderDetailController::class, 'destroy']);
+});
