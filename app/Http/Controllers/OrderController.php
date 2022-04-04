@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderMail;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
@@ -54,6 +57,9 @@ class OrderController extends Controller
             'status' => $request['status'],
             'total' => $request['total'],
         ]);
+        // $user = User::find($request['user_id']);
+        $user = $request->user();
+        Mail::send(new OrderMail(['email'=>$user->email]));
         return response()->json([
             'status' => 201,
             'message' => 'create order successfully',
