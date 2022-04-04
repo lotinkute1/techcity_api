@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -32,7 +33,7 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         //Tạo product
-        $request->validate([
+        $validator = Validator::make($request->all(), [
 
             'category_id' => 'required',
             'name' => 'required|unique:products,name',
@@ -49,6 +50,12 @@ class ProductController extends Controller
             'user_id' => 'required'
 
         ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 403,
+                'message' => $validator->errors()
+            ], 403);
+        }
         $response = Product::create([
 
             'category_id' => $request['category_id'],
@@ -66,11 +73,11 @@ class ProductController extends Controller
             'user_id' => $request['user_id']
 
         ]);
-        return response($response, 201)->json([
-            'status'=>201,
-            'message' =>'successfully created product',
-            'data'=>$response
-        ]);
+        return response()->json([
+            'status' => 201,
+            'message' => 'create product successfully',
+            'data' => $response
+        ], 201);
     }
 
     /**
