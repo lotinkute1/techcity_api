@@ -33,7 +33,7 @@ class ShipController extends Controller
     {
         //Tạo ship 
         $validator = Validator::make($request->all(),[
-            'ship_company' => 'required|unique',
+            'ship_company' => 'required|unique:ships,ship_company',
             'ship_price' => 'required|numeric',
             'unit' => 'required'
         ]);
