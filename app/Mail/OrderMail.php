@@ -18,6 +18,7 @@ class OrderMail extends Mailable
      */
     public function __construct($data)
     {
+        $this->data = $data;
         $this->email = $data['email'];
 
     }
@@ -32,6 +33,6 @@ class OrderMail extends Mailable
         return $this->from('techcitynotification@gmail.com')
         ->to($this->email)
         ->subject('Order Information')
-        ->view('emails.mail-order-notify');
+        ->view('emails.mail-order-notify')->with('user',$this->data);
     }
 }
