@@ -23,7 +23,7 @@ class OrderController extends Controller
         return response()->json([
             'status' => '200',
             'message' => 'order list',
-            'data'=>$order
+            'data' => $order
         ]);
     }
 
@@ -49,7 +49,7 @@ class OrderController extends Controller
             ], 403);
         }
 
-        $response = Order::create([
+        $order = Order::create([
             'user_id' => $request['user_id'],
             'recipient_name' => $request['recipient_name'],
             'recipient_address' => $request['recipient_address'],
@@ -57,13 +57,24 @@ class OrderController extends Controller
             'status' => $request['status'],
             'total' => $request['total'],
         ]);
+        $orderDetails = [];
+        foreach ($request['order_detail'] as $key => $orderDetail) {
+            $orderDetails[$key] = OrderDetail::create([
+                'number' => $orderDetail['number'],
+                'order_id' => $order['id'],
+                'price' => $orderDetail['price'],
+                'product_id' => $orderDetail['product_id'],
+                'status' => 1,
+                'product_name' => $orderDetail['product_name']
+            ]);
+        }
         // $user = User::find($request['user_id']);
         $user = $request->user();
-        Mail::send(new OrderMail(['email'=>$user->email]));
+        Mail::send(new OrderMail(['email' => $user->email]));
         return response()->json([
             'status' => 201,
             'message' => 'create order successfully',
-            'data' => $response
+            'data' => array_merge($order,['orderDetail' => $orderDetails])
         ], 201);
     }
 
@@ -121,12 +132,12 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $order = Order::find($id);
-        if($order){
-            $order->update($request->only(['recipient_name','recipient_address','recipient_phone_number','total','status']));
+        if ($order) {
+            $order->update($request->only(['recipient_name', 'recipient_address', 'recipient_phone_number', 'total', 'status']));
             return response()->json([
                 'status' => 200,
                 'message' => 'update Order successfully',
-                'data'=>$order
+                'data' => $order
             ]);
         }
         return response()->json([
@@ -144,15 +155,15 @@ class OrderController extends Controller
     public function destroy($id)
     {
         $order = Order::find($id);
-        if($order){
-            OrderDetail::where('order_id','=', $id)->delete();
+        if ($order) {
+            OrderDetail::where('order_id', '=', $id)->delete();
             $order->delete();
 
             return response()->json([
                 'status' => 203,
                 'message' => 'delete order successfully',
             ]);
-        }else{
+        } else {
 
             return response()->json([
                 'status' => 404,
