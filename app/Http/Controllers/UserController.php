@@ -70,7 +70,8 @@ class UserController extends Controller
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
             'password' => 'required|string',
-            'phone_number' => 'required|unique:users,phone_number'
+            'phone_number' => 'required|unique:users,phone_number',
+            'address'=>'string'
         ]);
         if($validator->fails()){
             return response()->json([
@@ -84,6 +85,7 @@ class UserController extends Controller
                 'email' => $request['email'],
                 'password' => bcrypt($request['password']),
                 'phone_number' => $request['phone_number'],
+                'address' => $request['address']
 
             ]);
             return response()->json([

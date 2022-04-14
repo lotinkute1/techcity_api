@@ -70,11 +70,23 @@ class OrderController extends Controller
         }
         // $user = User::find($request['user_id']);
         $user = $request->user();
-        Mail::send(new OrderMail(['email' => $user->email]));
+        Mail::send(new OrderMail(
+            $user,
+            $order,
+            $orderDetails
+        ));
         return response()->json([
             'status' => 201,
             'message' => 'create order successfully',
-            'data' => array_merge($order,['orderDetail' => $orderDetails])
+            'data' => [
+                'user_id' => $order['user_id'],
+                'recipient_name' => $order['recipient_name'],
+                'recipient_address' => $order['recipient_address'],
+                'recipient_phone_number' => $order['recipient_phone_number'],
+                'status' => $order['status'],
+                'total' => $order['total'],
+                'orderDetail'=>$orderDetails
+            ]
         ], 201);
     }
 
