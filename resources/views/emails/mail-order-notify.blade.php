@@ -82,9 +82,9 @@
                                                 <thead
                                                     style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box;">
                                                     <tr>
-                                                        <th align="left"
+                                                        {{-- <th align="left"
                                                             style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; border-bottom: 1px solid #edeff2; padding-bottom: 8px;">
-                                                            Image</th>
+                                                            Image</th> --}}
                                                         <th align="left"
                                                             style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; border-bottom: 1px solid #edeff2; padding-bottom: 8px;">
                                                             Name</th>
@@ -98,10 +98,24 @@
                                                 </thead>
                                                 <tbody
                                                     style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box;">
-                                                    {{-- @for ($i = $now; $i >= $last; $i--)
-                                                        <option value="{{ $i }}">{{ $i }}</option>
-                                                    @endfor --}}
-                                                    <tr>
+
+                                                    @foreach ($data['orderDetails'] as $order)
+                                                        <tr>
+                                                            {{-- <td
+                                                                style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 15px; line-height: 18px; padding: 10px 0;">
+                                                                Lorem Ipsum</td> --}}
+                                                            <td
+                                                                style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 15px; line-height: 18px; padding: 10px 0;">
+                                                                {{ $order['product_name'] }}</td>
+                                                            <td align="right"
+                                                                style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 15px; line-height: 18px; padding: 10px 0;">
+                                                                {{ $order['number'] }}</td>
+                                                            <td align="right"
+                                                                style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 15px; line-height: 18px; padding: 10px 0;">
+                                                                {{ $order['price'] }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                    {{-- <tr>
                                                         <td
                                                             style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 15px; line-height: 18px; padding: 10px 0;">
                                                             Product 1</td>
@@ -128,7 +142,7 @@
                                                         <td align="right"
                                                             style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 15px; line-height: 18px; padding: 10px 0;">
                                                             $20</td>
-                                                    </tr>
+                                                    </tr> --}}
                                                 </tbody>
                                             </table>
                                         </div>
@@ -143,13 +157,13 @@
                                                         style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box;">
                                                         <tr>
                                                             <td class="panel-item"
-                                                                style="display:flex;justify-content: space-between;  font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; padding: 0;">
+                                                                style="  font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; padding: 0;">
                                                                 <p
                                                                     style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 16px; line-height: 1.5em; margin-top: 0; text-align: left; margin-bottom: 0; padding-bottom: 0;">
                                                                     Total</p>
                                                                 <p
-                                                                    style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 16px; line-height: 1.5em; margin-top: 0; text-align: left; margin-bottom: 0; padding-bottom: 0;">
-                                                                    $70</p>
+                                                                    style="margin-left:auto; font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 16px; line-height: 1.5em; margin-top: 0; text-align: left; margin-bottom: 0; padding-bottom: 0;">
+                                                                    {{ $data['order']->total }}</p>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -158,10 +172,17 @@
                                         </table>
                                         <h3
                                             style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #2F3133; font-size: 14px; font-weight: bold; margin-top: 0; text-align: left;">
-                                            Your address</h3>
+
+                                            Receiver's information: </h3>
                                         <p
                                             style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 16px; line-height: 1.5em; margin-top: 0; text-align: left;">
-                                            {{$user->name}}
+                                            <strong>Name</strong> : {{ $data['user']->name }}
+                                            <br>
+                                            <strong>Address</strong> : {{ $data['user']->address}}
+                                            <br>
+                                            <strong>Phone</strong> : {{ $data['user']->phone_number }}
+                                            <br>
+                                            <strong>email</strong> : {{ $data['user']->email }}
                                         </p>
                                         <!-- <table class="action" align="center" width="100%" cellpadding="0"
                                             cellspacing="0" role="presentation"
