@@ -59,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // product api
 Route::prefix('product')->group(function () {
     Route::get('/getProducts', [ProductController::class, 'index']);
+    Route::get('/getPagiProducts', [ProductController::class, 'pagination']);
     Route::get('/getProduct/{id}', [ProductController::class, 'show']);
     Route::put('/updateProduct/{id}', [ProductController::class, 'update']);
     Route::get('/productFilter', [ProductController::class, 'productFilter']);

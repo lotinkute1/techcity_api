@@ -199,4 +199,16 @@ class ProductController extends Controller
             'message' => 'product not found',
         ]);
     }
+
+    public function pagination()
+    {
+        //get pagination products
+        $products = DB::table('products')->simplePaginate(10);
+        return response()->json([
+            'code'=>200,
+            'message'=>'pagination product list',
+            'data'=> $products
+        ],200);
+    }
 }
+
