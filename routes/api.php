@@ -45,15 +45,20 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     // category api
     Route::prefix('category')->group(function () {
-        Route::get('/getCategories', [CategoryController::class, 'index']);
-        Route::get('/getCategoriesByName/{name}', [CategoryController::class, 'getCategoriesByName']);
-        Route::get('/getCategoryById/{id}', [CategoryController::class, 'show']);
+        // Route::get('/getCategories', [CategoryController::class, 'index']);
+        // Route::get('/getCategoriesByName/{name}', [CategoryController::class, 'getCategoriesByName']);
+        // Route::get('/getCategoryById/{id}', [CategoryController::class, 'show']);
         Route::post('/addCategory', [CategoryController::class, 'addCategory']);
         Route::middleware(['checkrole'])->group(function () {
             Route::delete('/deleteCategoryById/{id}', [CategoryController::class, 'destroy']);
             Route::Put('/updateCategory/{id}', [CategoryController::class, 'update']);
         });
     });
+});
+Route::prefix('category')->group(function () {
+    Route::get('/getCategories', [CategoryController::class, 'index']);
+    Route::get('/getCategoriesByName/{name}', [CategoryController::class, 'getCategoriesByName']);
+    Route::get('/getCategoryById/{id}', [CategoryController::class, 'show']);
 });
 
 // product api
