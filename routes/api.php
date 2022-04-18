@@ -29,13 +29,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/register', [UserController::class, 'create']);
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/googleLogin', [UserController::class, 'loginGG']);
+Route::prefix('user')->group(function () {
+    Route::get('/getUsers', [UserController::class, 'index']);
+    Route::get('/getUserById/{id}', [UserController::class, 'show']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [UserController::class, 'logout']);
     // user api
     Route::prefix('user')->group(function () {
-        Route::get('/getUsers', [UserController::class, 'index']);
-        Route::get('/getUserById/{id}', [UserController::class, 'show']);
+        // Route::get('/getUsers', [UserController::class, 'index']);
+        // Route::get('/getUserById/{id}', [UserController::class, 'show']);
         Route::put('/updateUser/{id}', [UserController::class, 'update']);
         Route::get('/userFilter', [UserController::class, 'userFilter']);
 
