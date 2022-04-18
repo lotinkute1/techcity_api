@@ -77,12 +77,12 @@ class RatingController extends Controller
      */
     public function show($id)
     {
-        //Lấy rating theo id
-        $rating = Rating::find($id);
+        //Lấy rating theo product id
+        $rating = Rating::where('product_id','=',$id)->get();
         if($rating){
             return response()->json([
                 'code'=>200,
-                'message'=> 'get rating by Id',
+                'message'=> 'get rating by product Id',
                 'data'=>$rating
             ],200);
         }

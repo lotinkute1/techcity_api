@@ -51,7 +51,39 @@ class UserController extends Controller
             'data'=> $users
         ],200);
     }
+    public function loginGG(Request $request){
+        $user = User::where('email', $request->email)->first();
+        if ($user || Hash::check($request->password, $user->password)) {
+            // login if exist user
+            return $this->login($request);
+        }
+        //register and login
+        $validator = Validator::make($request->all(),[
+            'name' => 'required|string',
+            'email' => 'required|string',
+            'password' => 'required|string',
+            'phone_number' => 'required',
+            'address'=>'string'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status'=>403,
+                'message' =>$validator->errors()
+            ],403);
+        }else{
 
+            $response = User::create([
+                'name' => $request['name'],
+                'email' => $request['email'],
+                'password' => bcrypt($request['password']),
+                'phone_number' => $request['phone_number'],
+                'address' => $request['address']
+
+            ]);
+            return $this->login($response);
+
+        }
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -70,7 +102,8 @@ class UserController extends Controller
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
             'password' => 'required|string',
-            'phone_number' => 'required|unique:users,phone_number'
+            'phone_number' => 'required|unique:users,phone_number',
+            'address'=>'string'
         ]);
         if($validator->fails()){
             return response()->json([
@@ -84,6 +117,7 @@ class UserController extends Controller
                 'email' => $request['email'],
                 'password' => bcrypt($request['password']),
                 'phone_number' => $request['phone_number'],
+                'address' => $request['address']
 
             ]);
             return response()->json([
