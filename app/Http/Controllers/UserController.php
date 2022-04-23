@@ -30,7 +30,7 @@ class UserController extends Controller
             'code' => 201,
             'messages' => 'login successful',
             'data' => [
-                'user'=> $user,
+                'user' => $user,
                 'token' => $token
             ]
         ];
@@ -46,43 +46,70 @@ class UserController extends Controller
         //get all users
         $users = User::all();
         return response()->json([
-            'code'=>200,
-            'message'=>'users list',
-            'data'=> $users
-        ],200);
+            'code' => 200,
+            'message' => 'users list',
+            'data' => $users
+        ], 200);
     }
-    public function loginGG(Request $request){
-        $user = User::where('email', $request->email)->first();
-        if ($user || Hash::check($request->password, $user->password)) {
-            // login if exist user
-            return $this->login($request);
-        }
-        //register and login
-        $validator = Validator::make($request->all(),[
+    public function loginGG(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|string',
-            'password' => 'required|string',
-            'phone_number' => 'required',
-            'address'=>'string'
+            'ava' => 'string',
+            'phone_number' => 'numeric',
+            'address' => 'string'
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                'status'=>403,
-                'message' =>$validator->errors()
-            ],403);
-        }else{
-
-            $response = User::create([
-                'name' => $request['name'],
-                'email' => $request['email'],
-                'password' => bcrypt($request['password']),
-                'phone_number' => $request['phone_number'],
-                'address' => $request['address']
-
-            ]);
-            return $this->login($response);
-
+                'status' => 403,
+                'message' => $validator->errors()
+            ], 403);
         }
+        // login if exist user
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            $token = $user->createToken('myapptoken')->plainTextToken;
+            $response = [
+                'code' => 201,
+                'messages' => 'login google successful',
+                'data' => [
+                    'user' => $user,
+                    'token' => $token
+                ]
+            ];
+            return response()->json($response, 201)->cookie('loginTime', $token, 60 * 24);
+        }
+
+        //register
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|unique:users,email',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 403,
+                'message' => $validator->errors()
+            ], 403);
+        }
+        $userCreated = User::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => bcrypt('google'),
+            'phone_number' => $request['phone_number'],
+            'address' => $request['address'],
+            'ava'=>$request['ava']
+
+        ]);
+        $token = $userCreated->createToken('myapptoken')->plainTextToken;
+        $response = [
+            'code' => 201,
+            'messages' => 'register and login google successful',
+            'data' => [
+                'user' => $userCreated,
+                'token' => $token
+            ],
+        ];
+        return response()->json($response, 201)->cookie('loginTime', $token, 60 * 24);
     }
     /**
      * Show the form for creating a new resource.
@@ -91,40 +118,34 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        //  $request->validate([
-        //     'name' => 'required|string',
-        //     'email' => 'required|string|unique:users,email',
-        //     'password' => 'required|string',
-        //     'phone_number' => 'required',
-        // ]);
-
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
             'password' => 'required|string',
-            'phone_number' => 'required|unique:users,phone_number',
-            'address'=>'string'
+            'phone_number' => 'numeric|unique:users,phone_number',
+            'address' => 'string',
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                'status'=>403,
-                'message' =>$validator->errors()
-            ],403);
-        }else{
+                'status' => 403,
+                'message' => $validator->errors()
+            ], 403);
+        } else {
 
             $response = User::create([
                 'name' => $request['name'],
                 'email' => $request['email'],
                 'password' => bcrypt($request['password']),
                 'phone_number' => $request['phone_number'],
-                'address' => $request['address']
+                'address' => $request['address'],
+                'ava' => $request['ava']
 
             ]);
             return response()->json([
-                'status'=>201,
-                'message'=>'register successfully',
+                'status' => 201,
+                'message' => 'register successfully',
                 'data' => $response
-            ],201);
+            ], 201);
         }
     }
 
@@ -148,17 +169,17 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        if($user){
+        if ($user) {
             return response()->json([
-                'code'=>200,
-                'message'=> 'get user',
-                'data'=>$user
-            ],200);
+                'code' => 200,
+                'message' => 'get user',
+                'data' => $user
+            ], 200);
         }
         return response()->json([
-            'code'=>404,
-            'message'=> 'user not found',
-        ],404);
+            'code' => 404,
+            'message' => 'user not found',
+        ], 404);
     }
 
     /**
@@ -206,7 +227,6 @@ class UserController extends Controller
             'code' => 404,
             'message' => 'user not found',
         ]);
-
     }
 
     /**
@@ -230,20 +250,20 @@ class UserController extends Controller
             'message' => 'user not found',
         ]);
     }
-    public function userFilter(Request $request){
-        $result = User::where($request['filterType'],'like','%'.$request['filterVal'].'%')->get();
-        if(count($result) > 0){
+    public function userFilter(Request $request)
+    {
+        $result = User::where($request['filterType'], 'like', '%' . $request['filterVal'] . '%')->get();
+        if (count($result) > 0) {
             return response()->json([
-                'code'=>201,
-                'message'=>'filter user by ' . $request['filterType'],
-                'data'=>$result
+                'code' => 201,
+                'message' => 'filter user by ' . $request['filterType'],
+                'data' => $result
             ]);
-        }else{
+        } else {
             return response()->json([
-                'code'=>404,
-                'message'=>'not found',
+                'code' => 404,
+                'message' => 'not found',
             ]);
-
         }
     }
 }

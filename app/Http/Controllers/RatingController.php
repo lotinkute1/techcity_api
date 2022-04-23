@@ -33,10 +33,9 @@ class RatingController extends Controller
     {
         //Create rating
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
             'product_id' => 'required',
             'raiting_stars' => 'required|numeric|min:0|max:5',
-            // 'comment_content' => 'required'
+            'comment_content' => 'string'
         ]);
         if($validator->fails()){
             return response()->json([
@@ -46,7 +45,7 @@ class RatingController extends Controller
         };
 
         $response = Rating::create([
-            'user_id' => $request['user_id'],
+            'user_id' => $request->user()->id,
             'product_id' => $request['product_id'],
             'raiting_stars' => $request['raiting_stars'],
             'comment_content' => $request['comment_content']

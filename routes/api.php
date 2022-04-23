@@ -132,10 +132,12 @@ Route::middleware('auth:sanctum')->prefix('order')->group(function () {
 //rating api
 Route::prefix('rating')->group(function () {
     Route::get('/getRatings', [RatingController::class, 'index']);
-    Route::post('/addRating', [RatingController::class, 'create']);
     Route::get('/getRatingById/{id}', [RatingController::class, 'show']);
-    Route::put('/updateRating/{id}', [RatingController::class, 'update']);
-    Route::delete('/deleteRating/{id}', [RatingController::class, 'destroy']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/addRating', [RatingController::class, 'create']);
+        Route::put('/updateRating/{id}', [RatingController::class, 'update']);
+        Route::delete('/deleteRating/{id}', [RatingController::class, 'destroy']);
+    });
 });
 
 
