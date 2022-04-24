@@ -176,11 +176,11 @@
                                             Receiver's information: </h3>
                                         <p
                                             style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 16px; line-height: 1.5em; margin-top: 0; text-align: left;">
-                                            <strong>Name</strong> : {{ $data['user']->name }}
+                                            <strong>Name</strong> : {{ $data['order']['recipient_name'] }}
                                             <br>
-                                            <strong>Address</strong> : {{ $data['user']->address}}
+                                            <strong>Address</strong> : {{ $data['order']['recipient_address'] }}
                                             <br>
-                                            <strong>Phone</strong> : {{ $data['user']->phone_number }}
+                                            <strong>Phone</strong> : {{ $data['order']['recipient_phone_number'] }}
                                             <br>
                                             <strong>email</strong> : {{ $data['user']->email }}
                                         </p>
