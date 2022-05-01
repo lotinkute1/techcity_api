@@ -58,7 +58,7 @@ class OrderController extends Controller
             'total' => $request['total'],
         ]);
         $orderDetails = [];
-    
+
         foreach (gettype($request->order_detail) == "string" ? json_decode($request->order_detail) : $request->order_detail as $key => $orderDetail) {
           $orderDetail = (array) $orderDetail;
             $orderDetails[$key] = OrderDetail::create([
@@ -70,19 +70,19 @@ class OrderController extends Controller
                 'product_name' => $orderDetail["product_name"]
             ]);
         }
-        // $user = User::find($request['user_id']);
-        $user = $request->paypal ? (array) json_decode($request->user) : $request->user();
-        
+        $user = User::find($request['user_id']);
+        // $user = $request->paypal ? (array) json_decode($request->user) : $request->user();
+
         try {
 
 
-          //  Mail::send(new OrderMail( $user, $order, $orderDetails ));
-          
+           Mail::send(new OrderMail( $user, $order, $orderDetails ));
+
           } catch (\Exception $e) {
-          
-             
+
+
           }
-       
+
         if($request->paypal ) {
             return ;
         }
