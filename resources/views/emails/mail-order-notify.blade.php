@@ -176,13 +176,14 @@
                                             Receiver's information: </h3>
                                         <p
                                             style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #74787e; font-size: 16px; line-height: 1.5em; margin-top: 0; text-align: left;">
-                                            <strong>Name</strong> : {{ $data['user']->name }}
+                                            <strong>Name</strong> : {{ $data['user']['name'] }}
                                             <br>
-                                            <strong>Address</strong> : {{ $data['user']->address}}
+                                            <strong>Address</strong> : {{ $data['user']['address']}}
                                             <br>
-                                            <strong>Phone</strong> : {{ $data['user']->phone_number }}
+                                            <strong>Phone</strong> : {{ $data['user']["phone_number"] }}
                                             <br>
-                                            <strong>email</strong> : {{ $data['user']->email }}
+                                           
+                                            <strong>email</strong> : {{ $data['user']["email"] }}
                                         </p>
                                         <!-- <table class="action" align="center" width="100%" cellpadding="0"
                                             cellspacing="0" role="presentation"

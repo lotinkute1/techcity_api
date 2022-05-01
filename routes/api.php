@@ -140,4 +140,10 @@ Route::prefix('rating')->group(function () {
     });
 });
 
+ // paypal route 
+ Route::prefix('paypal')->group(function () {
+    Route::post('/',[\App\Http\Controllers\PaypalController::class,'index'])->name('paypal_call');
+    Route::get('/return',[\App\Http\Controllers\PaypalController::class,'paypalReturn'])->name('paypal_return');
+    Route::get('/cancel',[\App\Http\Controllers\PaypalController::class,'paypalCancel'])->name('paypal_cancel');    
+});
 
