@@ -214,6 +214,19 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::find($id);
+        $validator = Validator::make($request->all(), [
+            'name' => 'string',
+            'email' => 'string|unique:users,email',
+            'password' => 'string',
+            'phone_number' => 'numeric|unique:users,phone_number',
+            'address' => 'string',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => 403,
+                'message' => $validator->errors()
+            ], 403);
+        }
         if ($user) {
             $user->update($request->all());
             return response()->json([

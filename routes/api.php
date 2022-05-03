@@ -81,7 +81,7 @@ Route::prefix('product')->group(function () {
     });
 });
 // ship api
-Route::middleware('auth:sanctum')->group(function () {
+// Route::middleware('auth:sanctum')->group(function () {
 Route::prefix('ship')->group(function () {
     Route::get('/getShips', [ShipController::class, 'index']);
     Route::get('/getShip/{id}', [ShipController::class, 'show']);
@@ -93,7 +93,7 @@ Route::prefix('ship')->group(function () {
         });
     });
 });
-});
+// });
 
 // discount api
 Route::middleware('auth:sanctum', 'checkrole')->prefix('discount')->group(function () {
@@ -140,10 +140,10 @@ Route::prefix('rating')->group(function () {
     });
 });
 
- // paypal route 
+ // paypal route
  Route::prefix('paypal')->group(function () {
     Route::post('/',[\App\Http\Controllers\PaypalController::class,'index'])->name('paypal_call');
     Route::get('/return',[\App\Http\Controllers\PaypalController::class,'paypalReturn'])->name('paypal_return');
-    Route::get('/cancel',[\App\Http\Controllers\PaypalController::class,'paypalCancel'])->name('paypal_cancel');    
+    Route::get('/cancel',[\App\Http\Controllers\PaypalController::class,'paypalCancel'])->name('paypal_cancel');
 });
 
