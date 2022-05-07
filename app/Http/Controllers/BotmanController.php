@@ -12,7 +12,7 @@ class BotmanController extends Controller
         $botman = app('botman');
         $botman->hears('{message}', function($botman, $message){
 
-           if($message=='hi'){
+           if($message=='xin chào'){
                $this->askName($botman);
            }
            else{
@@ -22,13 +22,13 @@ class BotmanController extends Controller
         $botman->listen();
     }
     public function askName($botman){
-        $botman->ask("hello! what your name?", function(Answer $answer){
+        $botman->ask("xin chào tên bạn là gì?", function(Answer $answer){
             $name = $answer->getText();
-            $this->say("hello ".$name);
+            $this->say("xin chào ".$name);
         });
     }
     public function askProduct($botman){
-        $botman->ask("your find product name?", function(Answer $answer){
+        $botman->ask("Sản phẩm bạn cần tìm tên gì?", function(Answer $answer){
             $name = $answer->getText();
             $reponse=Product::where('name',"like",'%'.$name.'%')->get()->first();
             $this->say('<img src="'.$reponse->img.'" alt="'.$reponse->name.'" width="300"/>');
