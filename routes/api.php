@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\discountController;
 use App\Http\Controllers\discountDetailController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductController;
@@ -140,10 +141,14 @@ Route::prefix('rating')->group(function () {
     });
 });
 
- // paypal route
- Route::prefix('paypal')->group(function () {
-    Route::post('/',[\App\Http\Controllers\PaypalController::class,'index'])->name('paypal_call');
-    Route::get('/return',[\App\Http\Controllers\PaypalController::class,'paypalReturn'])->name('paypal_return');
-    Route::get('/cancel',[\App\Http\Controllers\PaypalController::class,'paypalCancel'])->name('paypal_cancel');
+// paypal route
+Route::prefix('paypal')->group(function () {
+    Route::post('/', [\App\Http\Controllers\PaypalController::class, 'index'])->name('paypal_call');
+    Route::get('/return', [\App\Http\Controllers\PaypalController::class, 'paypalReturn'])->name('paypal_return');
+    Route::get('/cancel', [\App\Http\Controllers\PaypalController::class, 'paypalCancel'])->name('paypal_cancel');
 });
-
+Route::middleware('auth:sanctum')->prefix('message')->group(function () {
+    Route::get('/getAllMessages', [MessageController::class, 'index']);
+    Route::post('/createMessage', [MessageController::class, 'create']);
+    Route::get('/getMessagesByConversationId', [MessageController::class, 'findByConversationId']);
+});
