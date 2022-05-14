@@ -24,23 +24,29 @@ use App\Http\Controllers\BotmanController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/',function(){
+
+Route::get('/', function () {
     return view('chat');
 });
-Route::match(['get','post'], '/botman' , [BotmanController::class,'handle']);
+Route::match(['get', 'post'], '/botman', [BotmanController::class, 'handle']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::post('/register', [UserController::class, 'create']);
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/googleLogin', [UserController::class, 'loginGG']);
+Route::prefix('user')->group(function () {
+    Route::get('/getUsers', [UserController::class, 'index']);
+    Route::get('/getUserById/{id}', [UserController::class, 'show']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [UserController::class, 'logout']);
     // user api
     Route::prefix('user')->group(function () {
-        Route::get('/getUsers', [UserController::class, 'index']);
-        Route::get('/getUserById/{id}', [UserController::class, 'show']);
+        // Route::get('/getUsers', [UserController::class, 'index']);
+        // Route::get('/getUserById/{id}', [UserController::class, 'show']);
         Route::put('/updateUser/{id}', [UserController::class, 'update']);
         Route::get('/userFilter', [UserController::class, 'userFilter']);
 
@@ -76,17 +82,17 @@ Route::prefix('product')->group(function () {
 });
 // ship api
 Route::middleware('auth:sanctum')->group(function () {
-Route::prefix('ship')->group(function () {
-    Route::get('/getShips', [ShipController::class, 'index']);
-    Route::get('/getShip/{id}', [ShipController::class, 'show']);
-    Route::post('/addShip', [ShipController::class, 'create']);
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::middleware(['checkrole'])->group(function () {
-            Route::put('/updateShip/{id}', [ShipController::class, 'update']);
-            Route::delete('/deleteShip/{id}', [ShipController::class, 'destroy']);
+    Route::prefix('ship')->group(function () {
+        Route::get('/getShips', [ShipController::class, 'index']);
+        Route::get('/getShip/{id}', [ShipController::class, 'show']);
+        Route::post('/addShip', [ShipController::class, 'create']);
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::middleware(['checkrole'])->group(function () {
+                Route::put('/updateShip/{id}', [ShipController::class, 'update']);
+                Route::delete('/deleteShip/{id}', [ShipController::class, 'destroy']);
+            });
         });
     });
-});
 });
 
 // discount api
@@ -126,10 +132,10 @@ Route::middleware('auth:sanctum')->prefix('order')->group(function () {
 //rating api
 Route::prefix('rating')->group(function () {
     Route::get('/getRatings', [RatingController::class, 'index']);
-    Route::post('/addRating', [RatingController::class, 'create']);
     Route::get('/getRatingById/{id}', [RatingController::class, 'show']);
-    Route::put('/updateRating/{id}', [RatingController::class, 'update']);
-    Route::delete('/deleteRating/{id}', [RatingController::class, 'destroy']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/addRating', [RatingController::class, 'create']);
+        Route::put('/updateRating/{id}', [RatingController::class, 'update']);
+        Route::delete('/deleteRating/{id}', [RatingController::class, 'destroy']);
+    });
 });
-
-
