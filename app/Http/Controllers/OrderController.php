@@ -53,14 +53,14 @@ class OrderController extends Controller
             'user_id' => $request['user_id'],
             'recipient_name' => $request['recipient_name'],
             'recipient_address' => $request['recipient_address'],
-            'recipient_phone_number' => (int )$request['recipient_phone_number'],
+            'recipient_phone_number' => (int)$request['recipient_phone_number'],
             'status' => $request['status'],
             'total' => $request['total'],
         ]);
         $orderDetails = [];
 
         foreach (gettype($request->order_detail) == "string" ? json_decode($request->order_detail) : $request->order_detail as $key => $orderDetail) {
-          $orderDetail = (array) $orderDetail;
+            $orderDetail = (array) $orderDetail;
             $orderDetails[$key] = OrderDetail::create([
                 'number' => $orderDetail["number"],
                 'order_id' => $order['id'],
@@ -70,21 +70,16 @@ class OrderController extends Controller
                 'product_name' => $orderDetail["product_name"]
             ]);
         }
-        $user = User::find($request['user_id']);
+        $user =$request->user();
         // $user = $request->paypal ? (array) json_decode($request->user) : $request->user();
-
         try {
+            Mail::send(new OrderMail($user, $order, $orderDetails));
+        } catch (\Exception $e) {
+            echo $e;
+        }
 
-
-           Mail::send(new OrderMail( $user, $order, $orderDetails ));
-
-          } catch (\Exception $e) {
-
-
-          }
-
-        if($request->paypal ) {
-            return ;
+        if ($request->paypal) {
+            return;
         }
         return response()->json([
             'status' => 201,
@@ -96,7 +91,7 @@ class OrderController extends Controller
                 'recipient_phone_number' => $order['recipient_phone_number'],
                 'status' => $order['status'],
                 'total' => $order['total'],
-                'orderDetail'=>$orderDetails
+                'orderDetail' => $orderDetails
             ]
         ], 201);
     }

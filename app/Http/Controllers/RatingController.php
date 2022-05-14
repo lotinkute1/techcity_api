@@ -35,13 +35,13 @@ class RatingController extends Controller
         $validator = Validator::make($request->all(), [
             'product_id' => 'required',
             'raiting_stars' => 'required|numeric|min:0|max:5',
-            'comment_content' => 'string'
+            'comment_content' => ''
         ]);
         if($validator->fails()){
             return response()->json([
                 'status' => 403,
                 'message' => $validator->errors()
-            ]);
+            ],403);
         };
 
         $response = Rating::create([
