@@ -97,9 +97,12 @@ Route::prefix('ship')->group(function () {
 // });
 
 // discount api
-Route::middleware('auth:sanctum', 'checkrole')->prefix('discount')->group(function () {
+Route::prefix('discount')->group(function(){
     Route::get('/getDiscounts', [discountController::class, 'index']);
     Route::get('/getDiscount/{id}', [discountController::class, 'show']);
+});
+
+Route::middleware('auth:sanctum', 'checkrole')->prefix('discount')->group(function () {
     Route::post('/addDiscount', [discountController::class, 'create']);
     Route::put('/updateDiscount/{id}', [discountController::class, 'updateDiscount']);
     Route::delete('/deleteDiscount/{id}', [discountController::class, 'destroy']);
@@ -150,5 +153,5 @@ Route::prefix('paypal')->group(function () {
 Route::middleware('auth:sanctum')->prefix('message')->group(function () {
     Route::get('/getAllMessages', [MessageController::class, 'index']);
     Route::post('/createMessage', [MessageController::class, 'create']);
-    Route::get('/getMessagesByConversationId', [MessageController::class, 'findByConversationId']);
+    Route::get('/getMessagesByConversationId/{id}', [MessageController::class, 'findByConversationId']);
 });
