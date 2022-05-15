@@ -16,11 +16,11 @@ class BotmanController extends Controller
         $botman = app('botman');
         $botman->hears('{message}', function ($botman, $message) {
 
-            if ($message == 'tôi đã mua những gì' || $message == 'những gì tôi đã mua' || $message == 'cho tôi xem lịch sử mua hàng' || $message == 'lịch sử mua hàng' || $message == 'lịch sử mua hàng của tôi' || $message == 'tui đã mua những gì' || $message == 'những gì tui đã mua' || $message == 'cho tui xem lịch sử mua hàng' || $message == 'lịch sử mua hàng của tui') {
+            if ($message == 'tôi đã mua những gì' || $message == 'những gì tôi đã mua' || $message == 'cho tôi xem lịch sử mua hàng' || $message == 'lịch sử mua hàng' || $message == 'lịch sử mua hàng của tôi' || $message == 'tui đã mua những gì' || $message == 'những gì tui đã mua' || $message == 'cho tui xem lịch sử mua hàng' || $message == 'lịch sử mua hàng của tui' || $message == 'tôi muốn xem lịch sử mua hàng') {
                 $botman->reply('<a target="_blank" rel="noopener noreferrer" href="http://localhost:3000/my-account/purchase-history">Click vào đây để đến lịch sử mua hàng</a>');
             } else if ($message == 'cảm ơn' || $message == 'cảm ơn nha' || $message == 'tam giác') {
                 $botman->reply("Không có gì");
-            } else if ($message == 'bên mình thanh toán bằng hình thức gì' || $message == 'hình thức thanh toán bên mình là gì' || $message == 'hình thức thanh toán ở đây' || $message == 'hình thức thanh toán ở đây là gì' ||  $message == 'hình thức thanh toán') {
+            } else if ($message == 'bên mình thanh toán bằng hình thức gì' || $message == 'hình thức thanh toán bên mình là gì' || $message == 'hình thức thanh toán ở đây là gì' || $message == 'hình thức thanh toán ở đây là gì' ||  $message == 'hình thức thanh toán') {
                 $botman->reply("Bên mình có 2 hình thức thanh toán: Thanh toán trực tiếp & Thanh toán paypal");
             } else {
                 $this->askProduct($botman);
