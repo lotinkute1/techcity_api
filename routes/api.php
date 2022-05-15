@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\discountController;
 use App\Http\Controllers\discountDetailController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductController;
@@ -81,24 +82,27 @@ Route::prefix('product')->group(function () {
     });
 });
 // ship api
-Route::middleware('auth:sanctum')->group(function () {
-    Route::prefix('ship')->group(function () {
-        Route::get('/getShips', [ShipController::class, 'index']);
-        Route::get('/getShip/{id}', [ShipController::class, 'show']);
-        Route::post('/addShip', [ShipController::class, 'create']);
-        Route::middleware('auth:sanctum')->group(function () {
-            Route::middleware(['checkrole'])->group(function () {
-                Route::put('/updateShip/{id}', [ShipController::class, 'update']);
-                Route::delete('/deleteShip/{id}', [ShipController::class, 'destroy']);
-            });
+// Route::middleware('auth:sanctum')->group(function () {
+Route::prefix('ship')->group(function () {
+    Route::get('/getShips', [ShipController::class, 'index']);
+    Route::get('/getShip/{id}', [ShipController::class, 'show']);
+    Route::post('/addShip', [ShipController::class, 'create']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware(['checkrole'])->group(function () {
+            Route::put('/updateShip/{id}', [ShipController::class, 'update']);
+            Route::delete('/deleteShip/{id}', [ShipController::class, 'destroy']);
         });
     });
 });
+// });
 
 // discount api
-Route::middleware('auth:sanctum', 'checkrole')->prefix('discount')->group(function () {
+Route::prefix('discount')->group(function(){
     Route::get('/getDiscounts', [discountController::class, 'index']);
     Route::get('/getDiscount/{id}', [discountController::class, 'show']);
+});
+
+Route::middleware('auth:sanctum', 'checkrole')->prefix('discount')->group(function () {
     Route::post('/addDiscount', [discountController::class, 'create']);
     Route::put('/updateDiscount/{id}', [discountController::class, 'updateDiscount']);
     Route::delete('/deleteDiscount/{id}', [discountController::class, 'destroy']);
@@ -138,4 +142,16 @@ Route::prefix('rating')->group(function () {
         Route::put('/updateRating/{id}', [RatingController::class, 'update']);
         Route::delete('/deleteRating/{id}', [RatingController::class, 'destroy']);
     });
+});
+
+// paypal route
+Route::prefix('paypal')->group(function () {
+    Route::post('/', [\App\Http\Controllers\PaypalController::class, 'index'])->name('paypal_call');
+    Route::get('/return', [\App\Http\Controllers\PaypalController::class, 'paypalReturn'])->name('paypal_return');
+    Route::get('/cancel', [\App\Http\Controllers\PaypalController::class, 'paypalCancel'])->name('paypal_cancel');
+});
+Route::middleware('auth:sanctum')->prefix('message')->group(function () {
+    Route::get('/getAllMessages', [MessageController::class, 'index']);
+    Route::post('/createMessage', [MessageController::class, 'create']);
+    Route::get('/getMessagesByConversationId/{id}', [MessageController::class, 'findByConversationId']);
 });
