@@ -34,6 +34,8 @@ Route::post('/googleLogin', [UserController::class, 'loginGG']);
 Route::prefix('user')->group(function () {
     Route::get('/getUsers', [UserController::class, 'index']);
     Route::get('/getUserById/{id}', [UserController::class, 'show']);
+    Route::get('/getPopularSuppliers/{pubularType}', [UserController::class, 'getPopularSuppliers']);
+
 });
 
 Route::middleware('auth:sanctum')->group(function () {
