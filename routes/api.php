@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\discountController;
 use App\Http\Controllers\discountDetailController;
 use App\Http\Controllers\MessageController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ShipController;
 use App\Http\Controllers\UserController;
+use App\Models\Conversation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -156,4 +158,5 @@ Route::middleware('auth:sanctum')->prefix('message')->group(function () {
     Route::get('/getAllMessages', [MessageController::class, 'index']);
     Route::post('/createMessage', [MessageController::class, 'create']);
     Route::get('/getMessagesByConversationId/{id}', [MessageController::class, 'findByConversationId']);
+    Route::get('/getConversationById/{id}', [ConversationController::class, 'getConversationById']);
 });
