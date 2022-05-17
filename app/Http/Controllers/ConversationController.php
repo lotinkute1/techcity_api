@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Conversation;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ConversationController extends Controller
@@ -81,5 +82,25 @@ class ConversationController extends Controller
     public function destroy(Conversation $conversation)
     {
         //
+    }
+    public function getConversationById( $id)
+    {
+        $conversation = Conversation::find($id);
+        if($conversation){
+            $userOneAndTwo = User::whereIn('id',[$conversation['userone_id'],$conversation['usertwo_id']])->get();
+
+            return response()->json([
+                'code' => 200,
+                'message' =>'get Conversation By Id',
+                'data' =>[
+                    'id'=>$conversation['id'],
+                    'conversation_name' =>$conversation['conversation_name'],
+                    'created_at' => $conversation['created_at'],
+                    'updated_at' => $conversation['updated_at'],
+                    'userone' => $userOneAndTwo[0],
+                    'usertwo' => $userOneAndTwo[1]
+                ]
+                ]);
+        }
     }
 }
