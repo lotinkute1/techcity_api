@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DiscountDetail;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,7 +16,9 @@ class discountDetailController extends Controller
      */
     public function index()
     {
-        $discounts = DiscountDetail::all();
+        $discounts = DiscountDetail::selectRaw('discount_details.*,products.name as discount_product_name')->leftJoin('products','products.id','=', 'discount_details.product_id')->get();
+
+
         return Response()->json([
             'status' => '200',
             'message' => 'get DiscountDetail list',
