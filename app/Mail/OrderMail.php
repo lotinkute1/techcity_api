@@ -30,10 +30,7 @@ class OrderMail extends Mailable
      */
     public function build()
     {
-<<<<<<< HEAD
-=======
       
->>>>>>> master
         return $this->from('techcitynotification@gmail.com')
             ->to($this->user['email'])
             ->subject('Order Information')

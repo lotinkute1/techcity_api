@@ -58,25 +58,6 @@ class OrderController extends Controller
             'total' => $request['total'],
         ]);
         $orderDetails = [];
-<<<<<<< HEAD
-        foreach ($request['order_detail'] as $key => $orderDetail) {
-            $orderDetails[$key] = OrderDetail::create([
-                'number' => $orderDetail['number'],
-                'order_id' => $order['id'],
-                'price' => $orderDetail['price'],
-                'product_id' => $orderDetail['product_id'],
-                'status' => 1,
-                'product_name' => $orderDetail['product_name']
-            ]);
-        }
-        // $user = User::find($request['user_id']);
-        $user = $request->user();
-        Mail::send(new OrderMail(
-            $user,
-            $order,
-            $orderDetails
-        ));
-=======
 
         foreach (gettype($request->order_detail) == "string" ? json_decode($request->order_detail) : $request->order_detail as $key => $orderDetail) {
             $orderDetail = (array) $orderDetail;
@@ -100,7 +81,6 @@ class OrderController extends Controller
         if ($request->paypal) {
             return;
         }
->>>>>>> master
         return response()->json([
             'status' => 201,
             'message' => 'create order successfully',
@@ -111,11 +91,7 @@ class OrderController extends Controller
                 'recipient_phone_number' => $order['recipient_phone_number'],
                 'status' => $order['status'],
                 'total' => $order['total'],
-<<<<<<< HEAD
-                'orderDetail'=>$orderDetails
-=======
                 'orderDetail' => $orderDetails
->>>>>>> master
             ]
         ], 201);
     }
