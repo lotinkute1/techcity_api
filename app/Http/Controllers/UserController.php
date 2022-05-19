@@ -279,4 +279,29 @@ class UserController extends Controller
             ]);
         }
     }
+    public function getPopularSuppliers($pubularType) {
+        $suppliers = User::selectRaw('
+        users.*,
+        sum(order_details.price * order_details.number) as total_sold_price,
+        sum(order_details.number) as total_products_sold
+        ')
+        ->leftJoin('products','users.id','=','products.user_id')
+        ->leftJoin('order_details','order_details.product_id','=','products.id')
+        ->where('users.role','=',1)
+        ->groupBy('users.id')
+        ->orderBy($pubularType,'desc')//total_sold_price or total_products_sold
+        ->get();
+        // dd($query->toSql(), $query->getBindings());
+        if(count($suppliers)<1){
+            return response()->json([
+                'code' => 404,
+                'message' => 'get popular suppliers fail',
+            ],404);
+        }
+        return response()->json([
+            'code' => 200,
+            'message' => 'get popular suppliers successfully',
+            'data' =>$suppliers
+        ],200);
+    }
 }

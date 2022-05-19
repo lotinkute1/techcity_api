@@ -35,11 +35,7 @@ class RatingController extends Controller
         $validator = Validator::make($request->all(), [
             'product_id' => 'required',
             'raiting_stars' => 'required|numeric|min:0|max:5',
-<<<<<<< HEAD
-            'comment_content' => 'string'
-=======
             'comment_content' => ''
->>>>>>> master
         ]);
         if($validator->fails()){
             return response()->json([
