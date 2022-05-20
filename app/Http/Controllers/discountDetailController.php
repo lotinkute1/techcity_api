@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DiscountDetail;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -63,9 +64,22 @@ class discountDetailController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function checkDiscountCode($code)
     {
-        //
+
+        $discountDetail = DiscountDetail::where('discount_code','=',$code)->first();
+        $saleOffProduct = Product::find($discountDetail['product_id']);
+        if($discountDetail){
+            return response()->json([
+                'code' => 201,
+                'message' =>'discount code valid',
+                'data' =>array_merge(['discount'=>$discountDetail],['product'=>$saleOffProduct] ),
+            ],201);
+        }
+        return response()->json([
+            'code' => 404,
+            'message' =>'discount code invalid',
+        ],404);
     }
 
     /**

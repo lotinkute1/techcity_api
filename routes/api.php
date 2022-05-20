@@ -103,6 +103,7 @@ Route::prefix('ship')->group(function () {
 Route::prefix('discount')->group(function(){
     Route::get('/getDiscounts', [discountController::class, 'index']);
     Route::get('/getDiscount/{id}', [discountController::class, 'show']);
+    Route::get('/checkDiscountCode/{code}', [discountDetailController::class, 'checkDiscountCode'])->middleware('auth:sanctum');
 });
 
 Route::middleware('auth:sanctum', 'checkrole')->prefix('discount')->group(function () {
