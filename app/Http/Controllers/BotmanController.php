@@ -38,10 +38,13 @@ class BotmanController extends Controller
             }
             if (Str::lower(convert_name($message)) == 'toidamuanhunggi' || Str::lower(convert_name($message)) == 'nhunggitoidamua' || Str::lower(convert_name($message)) == 'chotoixemlichsumuahang' || Str::lower(convert_name($message)) == 'lichsumuahang' || Str::lower(convert_name($message)) == 'lichsumuahangcuatoi' || Str::lower(convert_name($message)) == 'tuidamuanhunggi' || Str::lower(convert_name($message)) == 'nhunggituidamua' || Str::lower(convert_name($message)) == 'chotuixemlichsumuahang' || Str::lower(convert_name($message)) == 'lichsumuahangcuatui' || Str::lower(convert_name($message)) == 'toimuonxemlichsumuahang'  ) {
                 $botman->reply('<a target="_blank" rel="noopener noreferrer" href="http://localhost:3000/my-account/purchase-history">Click vào đây để đến lịch sử mua hàng</a>');
+                $this->askProduct($botman);
             } else if (Str::lower(convert_name($message)) == 'camon' || Str::lower(convert_name($message)) == 'camonha' || Str::lower(convert_name($message)) == 'tamgiac') {
                 $botman->reply("Không có gì nha ^^");
+                $this->askProduct($botman);
             } else if (Str::lower(convert_name($message)) == 'benminhthanhtoanbanghinhthucgi' || Str::lower(convert_name($message)) == 'hinhthucthanhtoanbenminhlagi' || Str::lower(convert_name($message)) == 'hinhthucthanhtoanodaylagi' || Str::lower(convert_name($message))  == 'hinhthucthanhtoanodaylasao' ||  Str::lower(convert_name($message))  == 'hinhthucthanhtoan' || Str::lower(convert_name($message)) == 'odaythanhtoanbanghinhthucgi' || Str::lower(convert_name($message)) == 'shopminhthanhtoanbanghinhthucgi' || Str::lower(convert_name($message)) == 'hinhthucthanhtoanbenshopminhlagi' || Str::lower(convert_name($message)) == 'hinhthucthanhtoanbencuahanglagi' || Str::lower(convert_name($message)) == 'benminhthanhtoanbanggi' || Str::lower(convert_name($message)) == 'odaythanhtoanbanggi' || Str::lower(convert_name($message)) == 'shopthanhtoanbanggi' || Str::lower(convert_name($message)) == 'cuahangthanhtoanbanggi' || Str::lower(convert_name($message)) == 'cuahangcuaminhthanhtoanbanggi')  {
                 $botman->reply("Bên mình có 2 hình thức thanh toán: Thanh toán trực tiếp & Thanh toán paypal");
+                $this->askProduct($botman);
             } else {
                 $this->askProduct($botman);
             }
@@ -78,10 +81,12 @@ class BotmanController extends Controller
                         </div>
                       </div></a>');
                     }
+
                     // $this->say('<img src="' . $reponse->img . '" alt="' . $reponse->name . '" width="300"/>');
                     // $this->say('<a target="_blank" rel="noopener noreferrer" href="http://localhost:3000/show-all-product?filterType=name&filterVal=' . $reponse->name . '">Click Me</a>');
                 }
             }
         });
+
     }
 }

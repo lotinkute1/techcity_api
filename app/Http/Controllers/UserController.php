@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrderDetail;
+use App\Models\Product;
+use App\Models\Rating;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -228,6 +232,7 @@ class UserController extends Controller
             ], 403);
         }
         if ($user) {
+            $request['password'] = bcrypt($request['password']);
             $user->update($request->all());
             return response()->json([
                 'code' => 200,
@@ -303,5 +308,35 @@ class UserController extends Controller
             'message' => 'get popular suppliers successfully',
             'data' =>$suppliers
         ],200);
+    }
+    public function getSoldData() {
+        $currentUser = Auth::user();
+        $ratingCount = Rating::selectRaw('count(*) as rating_count')
+        ->leftJoin('products', 'products.id','product_id')
+        ->leftJoin('users','products.user_id','users.id');
+        $productCount = Product::selectRaw('count(*) as product_count');
+        $orderTotalPrice =DB::table('order_details')->selectRaw('sum(order_details.price * order_details.number) as order_total,sum(order_details.number) as order_product_count')
+        ->leftJoin('products','products.id','order_details.product_id');
+        $soldByMonth = OrderDetail::selectRaw('
+            sum(order_details.number) as sold,  month( order_details.created_at) as month
+        ')->leftJoin('products','products.id','order_details.product_id')->groupBy(DB::raw('month( order_details.created_at)'));
+        if($currentUser->role ==1){
+            $ratingCount->where('users.id', '=', $currentUser->id);
+            $productCount->where('products.user_id', '=',$currentUser->id);
+            $orderTotalPrice->where('products.user_id', '=',$currentUser->id);
+            $soldByMonth->where('products.user_id', '=',$currentUser->id);
+        };
+
+        return response()->json([
+            'code' => 200,
+            'message'=> 'get sold data',
+            'data'=>[
+                'rating_count' => $ratingCount->get()[0]->rating_count,
+                'product_count'=>  $productCount->get()[0]->product_count,
+                'order_total'=> $orderTotalPrice->get()[0]->order_total,
+                'getOrderProductCount'=>$orderTotalPrice->get()[0]->order_product_count,
+                'soldByMonth'=>$soldByMonth->get()
+            ]
+        ]);
     }
 }

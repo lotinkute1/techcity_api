@@ -49,8 +49,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [UserController::class, 'logout']);
     // user api
     Route::prefix('user')->group(function () {
+
         // Route::get('/getUsers', [UserController::class, 'index']);
         // Route::get('/getUserById/{id}', [UserController::class, 'show']);
+        Route::get('/getSoldData', [UserController::class, 'getSoldData']);
         Route::put('/updateUser/{id}', [UserController::class, 'update']);
         Route::get('/userFilter', [UserController::class, 'userFilter']);
 
@@ -60,9 +62,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     // category api
     Route::prefix('category')->group(function () {
-        Route::get('/getCategories', [CategoryController::class, 'index']);
-        Route::get('/getCategoriesByName/{name}', [CategoryController::class, 'getCategoriesByName']);
-        Route::get('/getCategoryById/{id}', [CategoryController::class, 'show']);
+        // Route::get('/getCategories', [CategoryController::class, 'index']);
+        // Route::get('/getCategoriesByName/{name}', [CategoryController::class, 'getCategoriesByName']);
+        // Route::get('/getCategoryById/{id}', [CategoryController::class, 'show']);
         Route::post('/addCategory', [CategoryController::class, 'addCategory']);
         Route::middleware(['checkrole'])->group(function () {
             Route::delete('/deleteCategoryById/{id}', [CategoryController::class, 'destroy']);
@@ -70,7 +72,11 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 });
-
+Route::prefix('category')->group(function () {
+    Route::get('/getCategories', [CategoryController::class, 'index']);
+    Route::get('/getCategoriesByName/{name}', [CategoryController::class, 'getCategoriesByName']);
+    Route::get('/getCategoryById/{id}', [CategoryController::class, 'show']);
+});
 // product api
 Route::prefix('product')->group(function () {
     Route::get('/getProducts', [ProductController::class, 'index']);
@@ -106,7 +112,10 @@ Route::prefix('discount')->group(function(){
     Route::get('/checkDiscountCode/{code}', [discountDetailController::class, 'checkDiscountCode'])->middleware('auth:sanctum');
 });
 
-Route::middleware('auth:sanctum', 'checkrole')->prefix('discount')->group(function () {
+Route::middleware(
+    'auth:sanctum',
+    //  'checkrole'
+)->prefix('discount')->group(function () {
     Route::post('/addDiscount', [discountController::class, 'create']);
     Route::put('/updateDiscount/{id}', [discountController::class, 'updateDiscount']);
     Route::delete('/deleteDiscount/{id}', [discountController::class, 'destroy']);
@@ -134,6 +143,7 @@ Route::middleware('auth:sanctum')->prefix('order')->group(function () {
     Route::post('/addOrderDetail', [OrderDetailController::class, 'create']);
     Route::put('/updateOrderDetail/{id}', [OrderDetailController::class, 'update']);
     Route::delete('/deleteOrderDetail/{id}', [OrderDetailController::class, 'destroy']);
+    Route::get('/getSoldProductsCountByCategory', [OrderDetailController::class, 'getSoldProductsCountByCategory']);
 });
 
 

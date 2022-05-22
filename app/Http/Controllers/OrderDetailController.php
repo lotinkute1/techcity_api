@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class OrderDetailController extends Controller
@@ -145,5 +146,29 @@ class OrderDetailController extends Controller
                 'message' => 'order not found',
             ]);
         }
+    }
+    public function getSoldProductsCountByCategory(){
+        $user= Auth::user();
+        $sql = orderDetail::selectRaw('
+            sum(order_details.number) as product_sold,
+            category_id,
+            categories.category_name
+        ')->leftJoin('products','order_details.product_id','=','products.id')
+        ->leftJoin('categories','categories.id','=','products.category_id')->groupBy('category_id');
+        if( $user->role == 1){
+            $sql->where('products.user_id',$user->id);
+        };
+        $count = $sql->get();
+        if(count($count)<1){
+            return response()->json([
+                'code' => 403,
+                'message'=> 'You have not sold any products yet'
+            ]);
+        }
+        return  response()->json([
+            'code' => 200,
+            'message'=> 'get Sold Products Count By Category',
+            'data'=>$count
+        ]);
     }
 }
